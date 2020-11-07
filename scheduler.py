@@ -19,10 +19,6 @@ class Task():
         self.weight = weight
         self.duration = timedelta(minutes=duration)
 
-# TODO: add_task
-# TODO: add_occupied_time
-# TODO: convert_available_time: convert occupied time to available_time
-
 def convert(ddl):
     ddl = ddl.split(',')
     return datetime(int(ddl[0]), int(ddl[1]), int(ddl[2]), int(ddl[3]), int(ddl[4]))
@@ -57,8 +53,12 @@ def schedule(tasks, available_time):
             else:
                 schedule_dict[todo] = [start_time, start_time + timeslot_duration]
                 timeslot_duration = 0
-                # add_task(..., todo.duration-timeslot_duration)
+                todo.duration -= timeslot_duration
+                tasks.append(todo)
     return schedule_dict
+
+# TODO: add_occupied_time
+# TODO: convert_available_time: convert occupied time to available_time
 
 test_ddl = "2020, 11, 08, 10, 00"
 test_tasks = [Task("test1", convert(test_ddl), 0.5, 30)]
