@@ -1,7 +1,8 @@
 # StudyAssistant
-Hi
 
-## Online Education Ideas
+To improve your digital learning experience, Learning Scheduler generates a schedule automatically and helps overcome procrastination and develop better time management skills while studying at home.
+
+## Hand-Picked Online Education Tips
 
 ### Study
 
