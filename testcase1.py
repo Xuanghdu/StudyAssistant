@@ -3,7 +3,7 @@ from scheduler import*
 
 task_dict = {"test1":["2020, 11, 08, 2, 00", 0.5, 30],
         "assignment2":["2020, 11, 08, 11, 00", 0.9, 60],
-        "assignment1":["2020, 11, 08, 12, 00", 0.1, 600]
+        "assignment1":["2020, 11, 08, 12, 00", 0.9, 600]
         }
 
 task_list = []
