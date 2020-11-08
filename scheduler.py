@@ -29,8 +29,8 @@ def convert(ddl):
     return datetime(int(ddl[0]), int(ddl[1]), int(ddl[2]), int(ddl[3]), int(ddl[4]))
 
 def eval_priority(start_time, task):
-    ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60)
     # negative???
+    ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60)
     return exp(task.weight) * ddl_pressure
 
 def schedule(tasks, available_time):
@@ -92,19 +92,21 @@ def add_occupied_time(occupied_time, timeslots, frequency=None):
     if frequency is None:
         for i in range(len(timeslots)):
             if timeslots[i][0] <= occupied_time[0] and timeslots[i][1] >= occupied_time[1]:
+                removed = timeslots[i]
                 timeslots.remove(timeslots[i])
-                if timeslots[i][1] != occupied_time[1]:
-                    timeslots.insert(i, [occupied_time[1],timeslots[i][1]])
-                if timeslots[i][0] != occupied_time[0]:
-                    timeslots.insert(i, [timeslots[i][0],occupied_time[0]])
+                if removed[1] != occupied_time[1]:
+                    timeslots.insert(i, [occupied_time[1],removed[1]])
+                if removed[0] != occupied_time[0]:
+                    timeslots.insert(i, [removed[0],occupied_time[0]])
     else:
         for i in range(len(timeslots)):
             if timeslots[i][0] <= occupied_time[0] and timeslots[i][1] >= occupied_time[1]:
+                removed = timeslots[i]
                 timeslots.remove(timeslots[i])
-                if timeslots[i][1] != occupied_time[1]:
-                    timeslots.insert(i, [occupied_time[1],timeslots[i][1]])
-                if timeslots[i][0] != occupied_time[0]:
-                    timeslots.insert(i, [timeslots[i][0],occupied_time[0]])
+                if removed[1] != occupied_time[1]:
+                    timeslots.insert(i, [occupied_time[1],removed[1]])
+                if removed[0] != occupied_time[0]:
+                    timeslots.insert(i, [removed[0],occupied_time[0]])
                 occupied_time[0] += frequency
                 occupied_time[1] += frequency
     return timeslots
