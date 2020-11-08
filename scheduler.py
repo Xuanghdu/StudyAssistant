@@ -73,16 +73,14 @@ def schedule(tasks, available_time):
 
     return schedule_dict
 
+def pretty_print(test_tasks, test_available_time):
+    schedule_dict = schedule(test_tasks, test_available_time)
+    for task_UUID, schedules in schedule_dict.items():
+        print(UUID2Name[task_UUID], "is schedule between")
+        for start_end in schedules:
+            print("start:", str(start_end[0])[0:16])
+            print("end  :", str(start_end[1])[0:16])
+
+
 # TODO: add_occupied_time
 # TODO: convert_available_time: convert occupied time to available_time
-
-test_ddl = "2020, 11, 08, 10, 00"
-test_tasks = [Task("test1", convert(test_ddl), 0.5, 30)]
-current_time = datetime.now()
-test_available_time = [[current_time, convert(test_ddl)]]
-schedule_dict = schedule(test_tasks, test_available_time)
-for task_UUID, schedules in schedule_dict.items():
-    print(UUID2Name[task_UUID], "is schedule between")
-    for start_end in schedules:
-        print("start:", str(start_end[0])[0:16])
-        print("end  :", str(start_end[1])[0:16])
