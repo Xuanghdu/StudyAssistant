@@ -2,8 +2,6 @@ from datetime import datetime, timedelta
 from math import exp
 
 UUID2Name = {}
-current_time = datetime.now()
-available_time = [[current_time, last]]
 
 class Task():
     """
@@ -90,5 +88,23 @@ def last_ddl(test_tasks):
     ddl = [test_task.ddl for test_task in test_tasks]
     return max(ddl)
 
-def add_occupied_time(occupied_time, timeslots, always=True):
-    # TODO
+def add_occupied_time(occupied_time, timeslots, frequency=None):
+    if frequency is None:
+        for i in range(len(timeslots)):
+            if timeslots[i][0] <= occupied_time[0] and timeslots[i][1] >= occupied_time[1]:
+                timeslots.remove(timeslots[i])
+                if timeslots[i][1] != occupied_time[1]:
+                    timeslots.insert(i, [occupied_time[1],timeslots[i][1]])
+                if timeslots[i][0] != occupied_time[0]:
+                    timeslots.insert(i, [timeslots[i][0],occupied_time[0]])
+    else:
+        for i in range(len(timeslots)):
+            if timeslots[i][0] <= occupied_time[0] and timeslots[i][1] >= occupied_time[1]:
+                timeslots.remove(timeslots[i])
+                if timeslots[i][1] != occupied_time[1]:
+                    timeslots.insert(i, [occupied_time[1],timeslots[i][1]])
+                if timeslots[i][0] != occupied_time[0]:
+                    timeslots.insert(i, [timeslots[i][0],occupied_time[0]])
+                occupied_time[0] += frequency
+                occupied_time[1] += frequency
+    return timeslots

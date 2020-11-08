@@ -21,6 +21,7 @@ tasks.append(Task("AER210_lec7", convert(ddl+"15, 00, 00"), 0.1, 30*1))
 current_time = datetime.now()
 test_available_time = [[current_time, last_ddl(tasks)]]
 
-print(last_ddl(tasks))
+occupied_time = [convert(ddl+"10,23,00"), convert(ddl+"11,7,00")]
+add_occupied_time(occupied_time, test_available_time, frequency=timedelta(days=1))
 
 pretty_print(tasks, test_available_time)
