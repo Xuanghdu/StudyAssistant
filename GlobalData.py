@@ -20,7 +20,7 @@ represents an assigned time slot.'''
 
 upcomingTasks = []
 '''2-dimensional array of upcoming tasks. In each row, there are task name,
-start time, and end time correspondingly.'''
+start time, end time, and deadline (if any) correspondingly.'''
 
 
 class FixedTimeOverlapException(Exception):
@@ -101,12 +101,13 @@ def updateUpcomingTasks(now=None):
 
     tupleList = []
     for task in fixedTimeTasks:
-        tupleList.append((task[1], task[0], task[2]))
+        tupleList.append((task[1], task[0], task[2], None))
     for task in floatingTimeTasks:
         name = task.name
+        deadline = task.ddl
         timeSlots = floatingSchedule[task.UUID]
         for startTime, endTime in timeSlots:
-            tupleList.append((startTime, name, endTime))
+            tupleList.append((startTime, name, endTime, deadline))
     tupleList.sort()
 
     while len(tupleList) and tupleList[0][2] <= now:
@@ -116,5 +117,5 @@ def updateUpcomingTasks(now=None):
     # TODO: Handle the case when multiple tasks have the same start time.
 
     upcomingTasks.clear()
-    for startTime, name, endTime in tupleList:
-        upcomingTasks.append([name, startTime, endTime])
+    for startTime, name, endTime, deadline in tupleList:
+        upcomingTasks.append([name, startTime, endTime, deadline])

@@ -80,17 +80,26 @@ class MainWindow(QMainWindow):
             updateUpcomingTasks(now)
 
         rows = len(upcomingTasks)
-        model = QStandardItemModel(rows, 3)
-        model.setHorizontalHeaderLabels(['Name', 'Start', 'End'])
+        model = QStandardItemModel(rows, 4)
+        model.setHorizontalHeaderLabels(['Name', 'Start', 'End', 'Deadline'])
+
+        def sft(time): return time.strftime('%m/%d/%Y, %H:%M')
 
         for row in range(rows):
-            name, startTime, endTime = upcomingTasks[row]
+            name, startTime, endTime, deadline = upcomingTasks[row]
             model.setItem(row, 0, QStandardItem(name))
-            model.setItem(row, 1, QStandardItem(str(startTime)))
-            model.setItem(row, 2, QStandardItem(str(endTime)))
+            model.setItem(row, 1, QStandardItem(sft(startTime)))
+            model.setItem(row, 2, QStandardItem(sft(endTime)))
+            if deadline is not None:
+                model.setItem(row, 3, QStandardItem(sft(deadline)))
 
-        self.monthTab.taskViewer.tableView.setModel(model)
-        self.dayTab.taskViewer.tableView.setModel(model)
+        tableView = self.monthTab.taskViewer.tableView
+        tableView.setModel(model)
+        tableView.resizeColumnsToContents()
+
+        tableView = self.dayTab.taskViewer.tableView
+        tableView.setModel(model)
+        tableView.resizeColumnsToContents()
 
         if len(upcomingTasks) > 0:
             delta = upcomingTasks[0][1] - now

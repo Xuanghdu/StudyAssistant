@@ -54,7 +54,7 @@ class TaskViewer(QWidget):
         layout.addWidget(Label('Upcoming tasks:'), 0, 0)
 
         model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(['Name', 'Start', 'End'])
+        model.setHorizontalHeaderLabels(['Name', 'Start', 'End', 'Deadline'])
 
         self.tableView = QTableView()
         self.tableView.setModel(model)
