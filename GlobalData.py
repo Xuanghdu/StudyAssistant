@@ -18,7 +18,7 @@ floatingSchedule = {}
 '''Dictionary from Task UUIDs to two dimensional arrays. Each row of the array
 represents an assigned time slot.'''
 
-upcomingTasks = {}
+upcomingTasks = []
 '''2-dimensional array of upcoming tasks. In each row, there are task name,
 start time, and end time correspondingly.'''
 
@@ -113,6 +113,6 @@ def updateUpcomingTasks(now=None):
         tupleList = tupleList[0:UPCOMING_COUNT_MAX]
     # TODO: Handle the case when multiple tasks have the same start time.
 
-    upcomingTasks = []
+    upcomingTasks.clear()
     for startTime, name, endTime in tupleList:
         upcomingTasks.append([name, startTime, endTime])

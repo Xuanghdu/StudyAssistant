@@ -52,13 +52,19 @@ class TaskViewer(QWidget):
         layout = QGridLayout()
         layout.addWidget(Label('Upcoming tasks:'), 0, 0)
 
-        self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(
-            ['Name', 'From', 'Duration', 'Weight'])
+        model = QStandardItemModel()
+        model.setHorizontalHeaderLabels(['Name', 'Start', 'End'])
 
         self.tableView = QTableView()
-        self.tableView.setModel(self.model)
+        self.tableView.setModel(model)
         layout.addWidget(self.tableView, 1, 0)
+
+        self.tableView.setStyleSheet(self.tableView.styleSheet() + '''
+            QTableView * {
+                font-family: Verdana, Geneva, sans-serif;
+                font-size: 10pt;
+            }
+        ''')
 
         widget = QWidget()
         widget.setLayout(layout)
