@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from math import exp
 
 UUID2Name = {}
+current_time = datetime.now()
+available_time = [[current_time, last]]
 
 class Task():
     """
@@ -88,7 +90,5 @@ def last_ddl(test_tasks):
     ddl = [test_task.ddl for test_task in test_tasks]
     return max(ddl)
 
-def add_occupied_time(occupied_time, last, always=False):
-    current_time = datetime.now()
-    available_time = [[current_time, last]]
+def add_occupied_time(occupied_time, timeslots, always=True):
     # TODO
