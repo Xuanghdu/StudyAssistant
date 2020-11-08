@@ -48,6 +48,8 @@ class DoubleSpinBox(QDoubleSpinBox):
 
     def __init__(self, parent=None):
         super(DoubleSpinBox, self).__init__(parent)
+        self.setSingleStep(0.05)
+
         self.setStyleSheet(self.styleSheet() + '''
             QDoubleSpinBox {
                 font-family: Verdana, Geneva, sans-serif;
