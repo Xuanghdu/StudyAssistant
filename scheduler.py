@@ -10,7 +10,7 @@ class Task():
     def __init__(self, name, ddl, weight, duration):
         """
         Parameters:
-        ddl (str)      : "year, month, day, hour, minute"
+        ddl (datetime) : year, month, day, hour, minute
         weight (float) : [0, 1]
         duration (int) : in minute
         """
