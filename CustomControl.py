@@ -1,6 +1,8 @@
+from PyQt5.QtGui import QIcon
+
 from PyQt5.QtWidgets import (
     QCalendarWidget, QDateTimeEdit, QDoubleSpinBox, QLabel, QLCDNumber,
-    QLineEdit, QPushButton, QSpinBox, QTabWidget)
+    QLineEdit, QMessageBox, QPushButton, QSpinBox, QTabWidget)
 
 
 class CalendarWidget(QCalendarWidget):
@@ -136,6 +138,50 @@ class LineEdit(QLineEdit):
         ''')
 
 
+class MessageBox(QMessageBox):
+    '''Basic message box type without specifying an icon.'''
+
+    def __init__(self, icon, title, text, buttons, parent=None):
+        super(MessageBox, self).__init__(icon, title, text, buttons, parent)
+        self.setStyleSheet(self.styleSheet() + '''
+            QMessageBox {
+                font-family: Verdana, Geneva, sans-serif;
+                font-size: 10pt;
+            }
+
+            QMessageBox QPushButton {
+                font-family: Verdana, Geneva, sans-serif;
+                border: none;
+                font-size: 10pt;
+                min-width: 5em;
+                height: 2em;
+                border-radius: 8px;
+            }
+
+            QMessageBox QPushButton {
+                background-color: rgb(138, 186, 224);
+            }
+
+            QMessageBox QPushButton:hover {
+                background-color: rgb(69, 153, 219);
+            }
+
+            QMessageBox QPushButton:pressed {
+                background-color: rgb(0, 120, 215);
+            }
+        ''')
+
+
+class WarningBox(MessageBox):
+    '''Warning message box type.'''
+
+    def __init__(self, title, text, parent=None):
+        super(WarningBox, self).__init__(
+            WarningBox.Warning, title, text, WarningBox.Ok)
+
+        self.setWindowIcon(QIcon(self.iconPixmap()))
+
+
 class PushButton(QPushButton):
     '''Basic button type without coloring.'''
 
@@ -143,7 +189,7 @@ class PushButton(QPushButton):
         super(PushButton, self).__init__(text, parent)
         self.setStyleSheet(self.styleSheet() + '''
             QPushButton {
-                font-family: Verdana, Geneva, sans-serif;	
+                font-family: Verdana, Geneva, sans-serif;
                 border: none;
                 font-size: 10pt;
                 min-width: 5em;
