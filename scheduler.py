@@ -47,14 +47,15 @@ def schedule(tasks, available_time):
             print("{} is overdue\n".format(task.name))
             tasks.remove(task)
     for timeslot in available_time:
-        priority = []
         start_time = timeslot[0]
         timeslot_duration = timeslot[1] - timeslot[0]
         while timeslot_duration and len(tasks):
+            priority = []
             for task in tasks:
                 priority.append(eval_priority(start_time, task))
             todo = tasks[priority.index(max(priority))]
             tasks.remove(todo)
+            priority.remove(max(priority))
 
             if todo.duration <= timeslot_duration:
                 duration = todo.duration
