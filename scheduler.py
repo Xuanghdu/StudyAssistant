@@ -29,8 +29,13 @@ def convert(ddl):
     return datetime(int(ddl[0]), int(ddl[1]), int(ddl[2]), int(ddl[3]), int(ddl[4]))
 
 def eval_priority(start_time, task):
-    # negative???
-    ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60*(task.ddl - start_time).total_seconds()/60)
+    # ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60*(task.ddl - start_time).total_seconds()/60)
+    
+    # avoid exact 0
+    if (task.ddl - start_time - task.duration).total_seconds() == 0:
+        ddl_pressure = 2
+    else:    
+        ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60)
     return exp(task.weight) * ddl_pressure
 
 def schedule(tasks, available_time):
@@ -67,18 +72,16 @@ def schedule(tasks, available_time):
 
             # redo if cannot fit
             if (todo.ddl - start_time - todo.duration).total_seconds() < 0:
-
                 previous_todo = arranged.pop()
                 tasks.append(previous_todo)
                 time_span = schedule_dict.get(previous_todo.UUID)
                 if time_span is None:
                     print("Impossible to fit")
                     return None
-               
                 start_time, end_time = time_span.pop()
                 timeslot_duration += end_time-start_time
                 schedule_dict[previous_todo.UUID] = time_span
-                priority_bonus[todo.UUID] *=2 # brute force to increase priority 
+                priority_bonus[todo.UUID] *= 2                  # brute force to increase priority while keeping weight unchanged
                 continue
             
             arranged.append(todo) # add redo point
