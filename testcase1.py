@@ -5,7 +5,7 @@ test_tasks = [Task("test1", convert(test_ddl), 0.5, 30)]
 
 
 assignment1_ddl = "2020, 11, 08, 10, 00"
-test_tasks.append([Task("test1", convert(test_ddl), 0.1, 120)])
+test_tasks.append(Task("test2", convert(test_ddl), 0.1, 120))
 
 current_time = datetime.now()
 test_available_time = [[current_time, convert(test_ddl)]]

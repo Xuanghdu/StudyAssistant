@@ -25,6 +25,7 @@ class Task():
         self.duration = timedelta(minutes=duration)
 
 def convert(ddl):
+    ddl += "0, 0, 0, 0, 0"
     ddl = ddl.split(',')
     return datetime(int(ddl[0]), int(ddl[1]), int(ddl[2]), int(ddl[3]), int(ddl[4]))
 
@@ -59,7 +60,7 @@ def schedule(tasks, available_time):
             if todo.duration <= timeslot_duration:
                 duration = todo.duration
                 timeslot_duration -= todo.duration
-                start_time += todo.duration
+                new_start_time = start_time + todo.duration
             else:
                 duration = timeslot_duration
                 timeslot_duration = 0
@@ -71,6 +72,7 @@ def schedule(tasks, available_time):
                 time_span = []
             time_span.append([start_time, start_time + duration])
             schedule_dict[todo.UUID] = time_span
+            start_time = new_start_time
 
     return schedule_dict
 
