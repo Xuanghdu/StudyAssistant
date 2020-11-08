@@ -48,6 +48,46 @@ def schedule(tasks, available_time):
     schedule_dict  : dict of task to two-dimensional array of [[begin,end]]
     """
     schedule_dict = {}
+
+    # shink duration according to deadlines:
+    #   starting from the first deadline
+    #   shrink all durations before an unmeetable deadline
+    #   shrink by weight factor
+    
+    deadlines = sorted(list(set([task.ddl for task in tasks])))
+    for ddl in deadlines:
+        # total_time_for_slot = sum([task.duration for task in tasks])
+        total_duration = timedelta(minutes=0)
+        weighted_total_duration = timedelta(minutes=0)
+
+
+
+        for task in tasks:
+            if task.ddl <= ddl:
+                total_duration += task.duration
+                weighted_total_duration += task.weight * task.duration
+        
+        ddl_time_left = timedelta(minutes=0)
+        for start,end in available_time:
+            if end < ddl:
+                ddl_time_left += end-start
+            elif start < ddl:
+                ddl_time_left += ddl-start 
+            else: break
+
+
+        print('lolololo')
+        print(ddl_time_left)
+        print(total_duration)
+        print(weighted_total_duration)
+
+        if total_duration > ddl_time_left:
+            for task in tasks:
+                if task.ddl <= ddl:
+                    task.duration *=  ddl_time_left/total_duration
+    for task in tasks:
+        print(task.duration)
+
     for timeslot in available_time:
         for task in tasks:
             if task.ddl < available_time[0][0]:
@@ -80,16 +120,6 @@ def schedule(tasks, available_time):
             
             while timeslot_duration and len(tasks):
 
-                # total_time_for_slot = sum([task.duration for task in tasks])
-                total_time_for_slot = timedelta(minutes=0)
-            
-                for task in tasks:
-                    total_time_for_slot += task.duration
-
-                if total_time_for_slot > timeslot_duration:
-                    for task in tasks:
-                        task.duration *=  timeslot_duration/total_time_for_slot
-
                 priority = []
                 for task in tasks:
                     priority.append(eval_priority(start_time, task)*priority_bonus[task.UUID]) # multiply by bonus
@@ -99,7 +129,7 @@ def schedule(tasks, available_time):
                 todo = tasks[priority.index(max(priority))]
 
                 # redo if cannot fit
-                print( todo.ddl)
+                print(todo.ddl)
                 if (todo.ddl - start_time - todo.duration).total_seconds() < 0:
                     if not len(arranged):
                         print("Impossible to fit")
