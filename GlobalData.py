@@ -18,14 +18,18 @@ represents an assigned time slot.'''
 
 class FixedTimeOverlapException(Exception):
     '''Throwed only when `addFixedTimeTask` function encounters a
-    time-overlapping issue.'''
+    time-overlapping issue.
+
+    It holds the name of the overlapping task.'''
 
     pass
 
 
 class FloatingTimeOverlapException(Exception):
     '''Throwed only when `addFloatingTimeTask` function fails to schedule a new
-    task.'''
+    task.
+
+    It (maybe) hold the UUID/name of the overlapping task.'''
 
 
 def isTimeSlotOverlap(start1, end1, start2, end2):
@@ -77,4 +81,4 @@ def addFloatingTimeTask(task):
     if newSchedule is None:
         raise FloatingTimeOverlapException()
 
-    floatingSchedules = newSchedule
+    floatingSchedule = newSchedule
