@@ -30,7 +30,7 @@ def convert(ddl):
 
 def eval_priority(start_time, task):
     # negative???
-    ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60)
+    ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60*(task.ddl - start_time).total_seconds()/60)
     return exp(task.weight) * ddl_pressure
 
 def schedule(tasks, available_time):
