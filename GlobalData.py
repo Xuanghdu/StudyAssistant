@@ -4,6 +4,9 @@ from datetime import datetime
 
 DATETIME_MAX = datetime(2049, 12, 31, 23, 59)
 
+UPCOMING_COUNT_MAX = 20
+'''Maximum number of tasks shown in the "Upcoming tasks" list.'''
+
 fixedTimeTasks = []
 '''2-dimensional array of fixed time task. In each row, there are `taskName`,
 `startTime`, and `endTime` correspondingly.'''
@@ -18,14 +21,18 @@ represents an assigned time slot.'''
 
 class FixedTimeOverlapException(Exception):
     '''Throwed only when `addFixedTimeTask` function encounters a
-    time-overlapping issue.'''
+    time-overlapping issue.
+
+    It holds the name of the overlapping task.'''
 
     pass
 
 
 class FloatingTimeOverlapException(Exception):
     '''Throwed only when `addFloatingTimeTask` function fails to schedule a new
-    task.'''
+    task.
+
+    It (maybe) hold the UUID/name of the overlapping task.'''
 
 
 def isTimeSlotOverlap(start1, end1, start2, end2):
@@ -77,4 +84,35 @@ def addFloatingTimeTask(task):
     if newSchedule is None:
         raise FloatingTimeOverlapException()
 
-    floatingSchedules = newSchedule
+    floatingSchedule = newSchedule
+
+
+def getUpcomingTasks(now=None):
+    '''Given the "now" time, return a 2-dimensional array of upcoming tasks.
+
+    In each row, there are task name, start time, and end time correspondingly.
+    Returned rows are in increasing order.'''
+
+    if now is None:
+        now = datetime.now()
+
+    tupleList = []
+    for task in fixedTimeTasks:
+        tupleList.append((task[1], task[0], task[2]))
+    for task in floatingTimeTasks:
+        name = task.name
+        timeSlots = floatingSchedule[task.UUID]
+        for startTime, endTime in timeSlots:
+            tupleList.append((startTime, name, endTime))
+    tupleList.sort()
+
+    while len(tupleList) and tupleList[0][0] <= now:
+        del tupleList[0]
+    if len(tupleList) > UPCOMING_COUNT_MAX:
+        tupleList = tupleList[0:UPCOMING_COUNT_MAX]
+    # TODO: Handle the case when multiple tasks have the same start time.
+
+    tasks = []
+    for startTime, name, endTime in tupleList:
+        tasks.append([name, startTime, endTime])
+    return tasks

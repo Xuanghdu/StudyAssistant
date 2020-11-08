@@ -2,6 +2,10 @@ from CustomControl import (
     DateTimeEdit, DoubleSpinBox, ImportantPushButton, Label, LineEdit,
     NormalPushButton, SpinBox, TabWidget, WarningBox)
 
+from datetime import timedelta
+
+from GlobalData import *
+
 from PyQt5.QtCore import QDateTime
 
 from PyQt5.QtWidgets import QApplication, QGridLayout, QWidget
@@ -62,12 +66,13 @@ class NewTaskTab(TabWidget):
         if len(taskName) == 0:
             WarningBox('No Task Name', 'Task name cannot be empty!').exec()
             return
+        duration = self.durationInput.value()
 
         currentIndex = self.editorTabs.currentIndex()
         if currentIndex == 0:
-            self.onAddClickedScheduleForme()
+            self.onAddClickedScheduleForMe(taskName, duration)
         elif currentIndex == 1:
-            self.onAddClickedLetMeDecide()
+            self.onAddClickedLetMeDecide(taskName, duration)
         else:
             WarningBox('Unknown error',
                        'Cannot find the corresponding tab!').exec()
@@ -75,17 +80,36 @@ class NewTaskTab(TabWidget):
 
         self.resetInputs()
 
-    def onAddClickedScheduleForme(self):
+    def onAddClickedScheduleForMe(self, taskName, duration):
         '''Action when the "Add" button is clicked and the "Schedule for Me" tab
         is selected.'''
 
-        pass
+        weight = self.weightInput.value()
+        assert weight >= 0.0 and weight <= 1.0
 
-    def onAddClickedLetMeDecide(self):
+        deadline = self.deadlineInput.dateTime().toPyDateTime()
+        task = Task(taskName, deadline, weight, duration)
+
+        try:
+            addFloatingTimeTask(task)
+        except FloatingTimeOverlapException:
+            WarningBox('Failed to Add Task',
+                       'Failed to schedule for this task! Do nothing.').exec()
+
+    def onAddClickedLetMeDecide(self, taskName, duration):
         '''Action when the "Add" button is clicked and the "Schedule for Me" tab
         is selected.'''
 
-        pass
+        startTime = self.startFromInput.dateTime().toPyDateTime()
+        delta = timedelta(seconds=duration * 60)
+        endTime = startTime + delta
+
+        try:
+            addFixedTimeTask(taskName, startTime, endTime)
+        except FixedTimeOverlapException as e:
+            WarningBox('Failed to Add Task',
+                       'Failed to add task because it conflicts with the ' +
+                       'following task:\n"{}"'.format(str(e))).exec()
 
     def onCancelClicked(self):
         self.resetInputs()
