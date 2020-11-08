@@ -25,7 +25,6 @@ class Task():
         self.duration = timedelta(minutes=duration)
 
 def convert(ddl):
-    ddl += "0, 0, 0, 0, 0"
     ddl = ddl.split(',')
     return datetime(int(ddl[0]), int(ddl[1]), int(ddl[2]), int(ddl[3]), int(ddl[4]))
 
