@@ -57,12 +57,17 @@ def schedule(tasks, available_time):
         
         redo_this_time_slot = 1
         shrink = 0
-        fatal_deadline = None
+        fatal_deadline = None       
         while redo_this_time_slot:
             redo_this_time_slot = 0
+
             if shrink:
                 for task in tasks:
+                    print('performing shrink')
                     if task.ddl <= fatal_deadline:
+                        task.duration *= 0.1*task.weight+0.85
+                    print(task.UUID, ":",task.duration)
+                print('final--', fatal_deadline)
 
             start_time = timeslot[0]
             timeslot_duration = timeslot[1] - timeslot[0]
@@ -72,8 +77,19 @@ def schedule(tasks, available_time):
             for task in tasks:
                 priority_bonus[task.UUID]=1
             
-                
+            
             while timeslot_duration and len(tasks):
+
+                # total_time_for_slot = sum([task.duration for task in tasks])
+                total_time_for_slot = timedelta(minutes=0)
+            
+                for task in tasks:
+                    total_time_for_slot += task.duration
+
+                if total_time_for_slot > timeslot_duration:
+                    for task in tasks:
+                        task.duration *=  timeslot_duration/total_time_for_slot
+
                 priority = []
                 for task in tasks:
                     priority.append(eval_priority(start_time, task)*priority_bonus[task.UUID]) # multiply by bonus
