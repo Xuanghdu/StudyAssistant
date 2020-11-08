@@ -1,4 +1,7 @@
 from datetime import datetime, timedelta
+from math import exp
+
+UUID2Name = {}
 
 class Task():
     """
@@ -15,19 +18,21 @@ class Task():
         duration (int) : in minute
         """
         self.UUID = hash(name + str(ddl))
+        UUID2Name[self.UUID] = name
         self.name = name
         self.ddl = ddl
         self.weight = weight
         self.duration = timedelta(minutes=duration)
 
 def convert(ddl):
+    ddl += "0, 0, 0, 0, 0"
     ddl = ddl.split(',')
     return datetime(int(ddl[0]), int(ddl[1]), int(ddl[2]), int(ddl[3]), int(ddl[4]))
 
 def eval_priority(start_time, task):
     ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60)
     # negative???
-    return task.weight * ddl_pressure
+    return exp(task.weight) * ddl_pressure
 
 def schedule(tasks, available_time):
     """([Tasks], [[datetime,datetime]]) -> {Task:[[datetime,datetime]]}
@@ -51,11 +56,11 @@ def schedule(tasks, available_time):
                 priority.append(eval_priority(start_time, task))
             todo = tasks[priority.index(max(priority))]
             tasks.remove(todo)
-            
-            if todo.duration <= timeslot.duration:
+
+            if todo.duration <= timeslot_duration:
                 duration = todo.duration
                 timeslot_duration -= todo.duration
-                start_time += todo.duration
+                new_start_time = start_time + todo.duration
             else:
                 duration = timeslot_duration
                 timeslot_duration = 0
@@ -67,25 +72,17 @@ def schedule(tasks, available_time):
                 time_span = []
             time_span.append([start_time, start_time + duration])
             schedule_dict[todo.UUID] = time_span
+            start_time = new_start_time
 
-            '''
-            if (todo.duration <= timeslot_duration):
-                schedule_dict[todo] = [start_time, start_time + todo.duration]
-                timeslot_duration -= todo.duration
-                start_time += todo.duration
-            else:
-                schedule_dict[todo] = [start_time, start_time + timeslot_duration]
-                timeslot_duration = 0
-                todo.duration -= timeslot_duration
-                tasks.append(todo)
-            '''
     return schedule_dict
+
+def pretty_print(test_tasks, test_available_time):
+    schedule_dict = schedule(test_tasks, test_available_time)
+    for task_UUID, schedules in schedule_dict.items():
+        print(UUID2Name[task_UUID], "is schedule between")
+        for start_end in schedules:
+            print("start:", str(start_end[0])[0:16])
+            print("end  :", str(start_end[1])[0:16])
 
 # TODO: add_occupied_time
 # TODO: convert_available_time: convert occupied time to available_time
-
-test_ddl = "2020, 11, 08, 10, 00"
-test_tasks = [Task("test1", convert(test_ddl), 0.5, 30)]
-current_time = datetime.now()
-test_available_time = [[current_time, convert(test_ddl)]]
-print(schedule(test_tasks, test_available_time))
