@@ -1,3 +1,5 @@
+from CustomControl import ImportantPushButton, NormalPushButton
+
 from PyQt5.QtCore import QDateTime
 
 from PyQt5.QtWidgets import (
@@ -28,10 +30,10 @@ class NewTaskTab(QTabWidget):
 
         layout.addWidget(self.createEditorTabs(), 2, 0, 1, 4)
 
-        self.addButton = QPushButton('Add')
+        self.addButton = ImportantPushButton('Add')
         layout.addWidget(self.addButton, 3, 2)
 
-        self.cancelButton = QPushButton('Cancel')
+        self.cancelButton = NormalPushButton('Cancel')
         layout.addWidget(self.cancelButton, 3, 3)
 
         self.setLayout(layout)
