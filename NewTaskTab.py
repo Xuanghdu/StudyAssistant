@@ -1,13 +1,13 @@
-from CustomControl import ImportantPushButton, NormalPushButton
+from CustomControl import (
+    DateTimeEdit, DoubleSpinBox, ImportantPushButton, Label, LineEdit,
+    NormalPushButton, SpinBox, TabWidget)
 
 from PyQt5.QtCore import QDateTime
 
-from PyQt5.QtWidgets import (
-    QApplication, QDateTimeEdit, QDoubleSpinBox, QGridLayout, QLabel, QLineEdit,
-    QPushButton, QSpinBox, QTabWidget, QWidget)
+from PyQt5.QtWidgets import QApplication, QGridLayout, QWidget
 
 
-class NewTaskTab(QTabWidget):
+class NewTaskTab(TabWidget):
     '''"New Task" tab of the program main window.'''
 
     TASK_DURATION_MAX = 10000
@@ -17,14 +17,14 @@ class NewTaskTab(QTabWidget):
         super(NewTaskTab, self).__init__(parent)
 
         layout = QGridLayout()
-        layout.addWidget(QLabel('Task name:'), 0, 0)
-        layout.addWidget(QLabel('Duration:'), 1, 0)
-        layout.addWidget(QLabel('min'), 1, 3)
+        layout.addWidget(Label('Task name:'), 0, 0)
+        layout.addWidget(Label('Duration:'), 1, 0)
+        layout.addWidget(Label('min'), 1, 3)
 
-        self.nameInput = QLineEdit()
+        self.nameInput = LineEdit()
         layout.addWidget(self.nameInput, 0, 1, 1, 3)
 
-        self.durationInput = QSpinBox()
+        self.durationInput = SpinBox()
         self.durationInput.setRange(1, NewTaskTab.TASK_DURATION_MAX)
         layout.addWidget(self.durationInput, 1, 1, 1, 2)
 
@@ -42,7 +42,7 @@ class NewTaskTab(QTabWidget):
         '''Create and return a tab widget containing two types of task
         editors.'''
 
-        widget = QTabWidget()
+        widget = TabWidget()
         widget.addTab(self.createScheduleForMe(), 'Schedule for Me')
         widget.addTab(self.createLetMeDecide(), 'Let Me Decide')
         return widget
@@ -51,14 +51,14 @@ class NewTaskTab(QTabWidget):
         '''Create and return the "Schedule for me" tab.'''
 
         layout = QGridLayout()
-        layout.addWidget(QLabel('Weight:'), 0, 0)
-        layout.addWidget(QLabel('Deadline:'), 1, 0)
+        layout.addWidget(Label('Weight:'), 0, 0)
+        layout.addWidget(Label('Deadline:'), 1, 0)
 
-        self.weightInput = QDoubleSpinBox()
+        self.weightInput = DoubleSpinBox()
         self.weightInput.setRange(0.0, 1.0)
         layout.addWidget(self.weightInput, 0, 1)
 
-        self.deadlineInput = QDateTimeEdit()
+        self.deadlineInput = DateTimeEdit()
         self.deadlineInput.setMinimumDateTime(QDateTime.currentDateTime())
         layout.addWidget(self.deadlineInput, 1, 1)
 
@@ -70,9 +70,9 @@ class NewTaskTab(QTabWidget):
         '''Create and return the "Let me decide" tab.'''
 
         layout = QGridLayout()
-        layout.addWidget(QLabel('Start from:'), 0, 0)
+        layout.addWidget(Label('Start from:'), 0, 0)
 
-        self.startFromInput = QDateTimeEdit()
+        self.startFromInput = DateTimeEdit()
         self.startFromInput.setMinimumDateTime(QDateTime.currentDateTime())
         layout.addWidget(self.startFromInput, 0, 1)
 

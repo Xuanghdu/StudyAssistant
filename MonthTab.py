@@ -1,7 +1,8 @@
+from CustomControl import CalendarWidget
+
 from TaskViewer import TaskViewer
 
-from PyQt5.QtWidgets import (
-    QApplication, QCalendarWidget, QGridLayout, QWidget)
+from PyQt5.QtWidgets import QApplication, QGridLayout, QWidget
 
 
 class MonthTab(QWidget):
@@ -12,7 +13,7 @@ class MonthTab(QWidget):
 
         layout = QGridLayout()
 
-        self.calender = QCalendarWidget()
+        self.calender = CalendarWidget()
         layout.addWidget(self.calender, 0, 0)
 
         self.taskViewer = TaskViewer()

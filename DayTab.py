@@ -1,7 +1,8 @@
+from CustomControl import CalendarWidget
+
 from TaskViewer import TaskViewer
 
-from PyQt5.QtWidgets import (
-    QApplication, QCalendarWidget, QGridLayout, QWidget)
+from PyQt5.QtWidgets import QApplication, QGridLayout, QWidget
 
 
 class DayTab(QWidget):
@@ -13,7 +14,7 @@ class DayTab(QWidget):
         layout = QGridLayout()
 
         # TODO: create a custom schedule display
-        self.schedule = QCalendarWidget()
+        self.schedule = CalendarWidget()
         layout.addWidget(self.schedule, 0, 0)
 
         self.taskViewer = TaskViewer()

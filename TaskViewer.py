@@ -1,7 +1,8 @@
+from CustomControl import Label, LCDNumber
+
 from PyQt5.QtGui import QStandardItemModel
 
-from PyQt5.QtWidgets import (
-    QApplication, QGridLayout, QLabel, QLCDNumber, QTableView, QWidget)
+from PyQt5.QtWidgets import QApplication, QGridLayout, QTableView, QWidget
 
 
 class TaskViewer(QWidget):
@@ -30,14 +31,14 @@ class TaskViewer(QWidget):
         deadline.'''
 
         layout = QGridLayout()
-        layout.addWidget(QLabel('Next deadline comes in'), 0, 0, 1, 4)
-        layout.addWidget(QLabel('hr'), 1, 1)
-        layout.addWidget(QLabel('min'), 1, 3)
+        layout.addWidget(Label('Next deadline comes in:'), 0, 0, 1, 4)
+        layout.addWidget(Label('hr'), 1, 1)
+        layout.addWidget(Label('min'), 1, 3)
 
-        self.countDownHour = QLCDNumber(2)
+        self.countDownHour = LCDNumber(2)
         layout.addWidget(self.countDownHour, 1, 0)
 
-        self.countDownMinute = QLCDNumber(2)
+        self.countDownMinute = LCDNumber(2)
         layout.addWidget(self.countDownMinute, 1, 2)
 
         widget = QWidget()
@@ -49,7 +50,7 @@ class TaskViewer(QWidget):
         following tasks.'''
 
         layout = QGridLayout()
-        layout.addWidget(QLabel('Following tasks:'), 0, 0)
+        layout.addWidget(Label('Following tasks:'), 0, 0)
 
         self.model = QStandardItemModel()
         self.model.setHorizontalHeaderLabels(
