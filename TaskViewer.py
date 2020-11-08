@@ -17,6 +17,14 @@ class TaskViewer(QWidget):
 
         self.setLayout(layout)
 
+    def displayCountDown(self, hour, minute):
+        '''Display the hour and minute on the LCD displays. The hour and minute
+        have two digits each. Extra digits are filled with zeros.'''
+
+        assert hour >= 0 and hour < 100 and minute >= 0 and minute < 100
+        self.countDownHour.display('{:02d}'.format(hour))
+        self.countDownMinute.display('{:02d}'.format(minute))
+
     def createCountDown(self):
         '''Create and return a widget containing a countdown to the next
         deadline.'''
