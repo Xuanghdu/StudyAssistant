@@ -24,7 +24,7 @@ def convert(ddl):
     return datetime(int(ddl[0]), int(ddl[1]), int(ddl[2]), int(ddl[3]), int(ddl[4]))
 
 def eval_priority(start_time, task):
-    ddl_pressure = 1/((start_time + task.duration - task.ddl).seconds/60)
+    ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60)
     # negative???
     return task.weight * ddl_pressure
 
@@ -64,7 +64,7 @@ def schedule(tasks, available_time):
 # TODO: add_occupied_time
 # TODO: convert_available_time: convert occupied time to available_time
 
-test_ddl = "2020, 11, 07, 10, 00"
+test_ddl = "2020, 11, 08, 10, 00"
 test_tasks = [Task("test1", convert(test_ddl), 0.5, 30)]
 current_time = datetime.now()
 test_available_time = [[current_time, convert(test_ddl)]]
