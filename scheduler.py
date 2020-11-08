@@ -84,5 +84,5 @@ schedule_dict = schedule(test_tasks, test_available_time)
 for task_UUID, schedules in schedule_dict.items():
     print(UUID2Name[task_UUID], "is schedule between")
     for start_end in schedules:
-        print("start:", str(start_end[0]))
-        print("end  :", str(start_end[1]))
+        print("start:", str(start_end[0])[0:16])
+        print("end  :", str(start_end[1])[0:16])
