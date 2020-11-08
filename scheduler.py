@@ -32,7 +32,8 @@ def eval_priority(start_time, task):
     # ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60*(task.ddl - start_time).total_seconds()/60)
     
     # avoid exact 0
-    if (task.ddl - start_time - task.duration).total_seconds() == 0:
+    # avoid negative (in the middle of calculation)
+    if (task.ddl - start_time - task.duration).total_seconds() <= 0:
         ddl_pressure = 2
     else:    
         ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60)
@@ -52,58 +53,76 @@ def schedule(tasks, available_time):
             if task.ddl < available_time[0][0]:
                 print("{} is overdue\n".format(task.name))
                 tasks.remove(task)
+
+        
+        redo_this_time_slot = 1
+        shrink = 0
+        fatal_deadline = None
+        while redo_this_time_slot:
+            redo_this_time_slot = 0
+            if shrink:
+                for task in tasks:
+                    if task.ddl <= fatal_deadline:
+
             start_time = timeslot[0]
-        timeslot_duration = timeslot[1] - timeslot[0]
+            timeslot_duration = timeslot[1] - timeslot[0]
 
-        arranged = []
-        priority_bonus = {} # initialize bonus dict
-        for task in tasks:
-            priority_bonus[task.UUID]=1
-        
-        
-        while timeslot_duration and len(tasks):
-            priority = []
+            arranged = []
+            priority_bonus = {} # initialize bonus dict
             for task in tasks:
-                priority.append(eval_priority(start_time, task)*priority_bonus[task.UUID]) # multiply by bonus
-
-            print(priority)
-
-            todo = tasks[priority.index(max(priority))]
-
-            # redo if cannot fit
-            if (todo.ddl - start_time - todo.duration).total_seconds() < 0:
-                previous_todo = arranged.pop()
-                tasks.append(previous_todo)
-                time_span = schedule_dict.get(previous_todo.UUID)
-                if time_span is None:
-                    print("Impossible to fit")
-                    return None
-                start_time, end_time = time_span.pop()
-                timeslot_duration += end_time-start_time
-                schedule_dict[previous_todo.UUID] = time_span
-                priority_bonus[todo.UUID] *= 2                  # brute force to increase priority while keeping weight unchanged
-                continue
+                priority_bonus[task.UUID]=1
             
-            arranged.append(todo) # add redo point
-            tasks.remove(todo)
-            priority.remove(max(priority))
+                
+            while timeslot_duration and len(tasks):
+                priority = []
+                for task in tasks:
+                    priority.append(eval_priority(start_time, task)*priority_bonus[task.UUID]) # multiply by bonus
 
-            if todo.duration <= timeslot_duration:
-                duration = todo.duration
-                timeslot_duration -= todo.duration
-                new_start_time = start_time + todo.duration
-            else:
-                duration = timeslot_duration
-                todo.duration -= timeslot_duration
-                timeslot_duration = 0
-                tasks.append(todo)
+                print(priority)
 
-            time_span = schedule_dict.get(todo.UUID)
-            if time_span is None:
-                time_span = []
-            time_span.append([start_time, start_time + duration])
-            schedule_dict[todo.UUID] = time_span
-            start_time = new_start_time
+                todo = tasks[priority.index(max(priority))]
+
+                # redo if cannot fit
+                print( todo.ddl)
+                if (todo.ddl - start_time - todo.duration).total_seconds() < 0:
+                    if not len(arranged):
+                        print("Impossible to fit")
+                        
+                        redo_this_time_slot = 1
+                        shrink = 1
+                        fatal_deadline = todo.ddl
+                        break
+
+                    previous_todo = arranged.pop()
+                    tasks.append(previous_todo)
+                    time_span = schedule_dict.get(previous_todo.UUID)
+                    start_time, end_time = time_span.pop()
+                    timeslot_duration += end_time-start_time
+                    schedule_dict[previous_todo.UUID] = time_span
+                    priority_bonus[todo.UUID] *= 2                  # brute force to increase priority while keeping weight unchanged
+                    continue
+                
+                arranged.append(todo) # add redo point
+                tasks.remove(todo)
+                priority.remove(max(priority))
+
+                if todo.duration <= timeslot_duration:
+                    duration = todo.duration
+                    timeslot_duration -= todo.duration
+                    new_start_time = start_time + todo.duration
+                else:
+                    duration = timeslot_duration
+                    todo.duration -= timeslot_duration
+                    timeslot_duration = 0
+                    tasks.append(todo)
+                    new_start_time = start_time + todo.duration # added this don't know if any bug would happen
+
+                time_span = schedule_dict.get(todo.UUID)
+                if time_span is None:
+                    time_span = []
+                time_span.append([start_time, start_time + duration])
+                schedule_dict[todo.UUID] = time_span
+                start_time = new_start_time
 
     return schedule_dict
 
