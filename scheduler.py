@@ -14,6 +14,7 @@ class Task():
         weight (float) : [0, 1]
         duration (int) : in minute
         """
+        self.UUID = hash(name + str(ddl))
         self.name = name
         self.ddl = ddl
         self.weight = weight
@@ -50,6 +51,21 @@ def schedule(tasks, available_time):
                 priority.append(eval_priority(start_time, task))
             todo = tasks[priority.index(max(priority))]
             tasks.remove(todo)
+            
+            if todo.duration <= timeslot.duration:
+                duration = todo.duration
+            else:
+                duration = timeslot_duration
+                todo.duration -= timeslot_duration
+            timeslot_duration -= duration
+
+            time_span = schedule_dict.get(todo.UUID)
+            if time_span is None:
+                time_span = []
+            time_span.append(start_time, start_time + duration)
+            schedule_dict[todo.UUID] = time_span
+            
+            '''
             if (todo.duration <= timeslot_duration):
                 schedule_dict[todo] = [start_time, start_time + todo.duration]
                 timeslot_duration -= todo.duration
@@ -59,6 +75,7 @@ def schedule(tasks, available_time):
                 timeslot_duration = 0
                 todo.duration -= timeslot_duration
                 tasks.append(todo)
+            '''
     return schedule_dict
 
 # TODO: add_occupied_time
