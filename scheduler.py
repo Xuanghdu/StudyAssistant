@@ -49,14 +49,39 @@ def schedule(tasks, available_time):
                 tasks.remove(task)
             start_time = timeslot[0]
         timeslot_duration = timeslot[1] - timeslot[0]
+
+        arranged = []
+        priority_bonus = {} # initialize bonus dict
+        for task in tasks:
+            priority_bonus[task.UUID]=1
+        
+        
         while timeslot_duration and len(tasks):
             priority = []
             for task in tasks:
-                priority.append(eval_priority(start_time, task))
+                priority.append(eval_priority(start_time, task)*priority_bonus[task.UUID]) # multiply by bonus
 
             print(priority)
 
             todo = tasks[priority.index(max(priority))]
+
+            # redo if cannot fit
+            if (todo.ddl - start_time - todo.duration).total_seconds() < 0:
+
+                previous_todo = arranged.pop()
+                tasks.append(previous_todo)
+                time_span = schedule_dict.get(previous_todo.UUID)
+                if time_span is None:
+                    print("Impossible to fit")
+                    return None
+               
+                start_time, end_time = time_span.pop()
+                timeslot_duration += end_time-start_time
+                schedule_dict[previous_todo.UUID] = time_span
+                priority_bonus[todo.UUID] *=2 # brute force to increase priority 
+                continue
+            
+            arranged.append(todo) # add redo point
             tasks.remove(todo)
             priority.remove(max(priority))
 
