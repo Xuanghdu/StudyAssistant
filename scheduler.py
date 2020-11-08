@@ -42,17 +42,20 @@ def schedule(tasks, available_time):
     schedule_dict  : dict of task to two-dimensional array of [[begin,end]]
     """
     schedule_dict = {}
-    for task in tasks:
-        if task.ddl < datetime.now():
-            print("{} is overdue\n".format(task.name))
-            tasks.remove(task)
     for timeslot in available_time:
-        start_time = timeslot[0]
+        for task in tasks:
+            if task.ddl < available_time[0][0]:
+                print("{} is overdue\n".format(task.name))
+                tasks.remove(task)
+            start_time = timeslot[0]
         timeslot_duration = timeslot[1] - timeslot[0]
         while timeslot_duration and len(tasks):
             priority = []
             for task in tasks:
                 priority.append(eval_priority(start_time, task))
+
+            print(priority)
+
             todo = tasks[priority.index(max(priority))]
             tasks.remove(todo)
             priority.remove(max(priority))
