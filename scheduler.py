@@ -29,8 +29,8 @@ def convert(ddl):
     return datetime(int(ddl[0]), int(ddl[1]), int(ddl[2]), int(ddl[3]), int(ddl[4]))
 
 def eval_priority(start_time, task):
-    ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60)
-    # negative???
+    ddl_pressure = task.duration/(task.ddl - start_time)
+    # less than unity?
     return exp(task.weight) * ddl_pressure
 
 def schedule(tasks, available_time):
