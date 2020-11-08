@@ -63,8 +63,8 @@ def schedule(tasks, available_time):
                 new_start_time = start_time + todo.duration
             else:
                 duration = timeslot_duration
-                timeslot_duration = 0
                 todo.duration -= timeslot_duration
+                timeslot_duration = 0
                 tasks.append(todo)
 
             time_span = schedule_dict.get(todo.UUID)
@@ -90,23 +90,40 @@ def last_ddl(test_tasks):
 
 def add_occupied_time(occupied_time, timeslots, frequency=None):
     if frequency is None:
-        for i in range(len(timeslots)):
-            if timeslots[i][0] <= occupied_time[0] and timeslots[i][1] >= occupied_time[1]:
-                removed = timeslots[i]
-                timeslots.remove(timeslots[i])
-                if removed[1] != occupied_time[1]:
-                    timeslots.insert(i, [occupied_time[1],removed[1]])
-                if removed[0] != occupied_time[0]:
-                    timeslots.insert(i, [removed[0],occupied_time[0]])
+            if occupied_time[0] <= timeslots[0][0] <= occupied_time[1]:
+                removed = timeslots[0]
+                timeslots.remove(timeslots[0])
+                timeslots.insert(0, [occupied_time[1], removed[1]])
+            for i in range(len(timeslots)):
+                if timeslots[i][0] <= occupied_time[0] and timeslots[i][1] >= occupied_time[1]:
+                    removed = timeslots[i]
+                    timeslots.remove(timeslots[i])
+                    if removed[1] != occupied_time[1]:
+                        timeslots.insert(i, [occupied_time[1],removed[1]])
+                    if removed[0] != occupied_time[0]:
+                        timeslots.insert(i, [removed[0],occupied_time[0]])
+            if occupied_time[0] <= timeslots[-1][1] <= occupied_time[1]:
+                timeslots[-1][1] = occupied_time[0]
     else:
-        for i in range(len(timeslots)):
-            if timeslots[i][0] <= occupied_time[0] and timeslots[i][1] >= occupied_time[1]:
-                removed = timeslots[i]
-                timeslots.remove(timeslots[i])
-                if removed[1] != occupied_time[1]:
-                    timeslots.insert(i, [occupied_time[1],removed[1]])
-                if removed[0] != occupied_time[0]:
-                    timeslots.insert(i, [removed[0],occupied_time[0]])
-                occupied_time[0] += frequency
-                occupied_time[1] += frequency
+        while (occupied_time[0] < timeslots[-1][1]):
+            if occupied_time[0] <= timeslots[0][0] <= occupied_time[1]:
+                removed = timeslots[0]
+                timeslots.remove(timeslots[0])
+                timeslots.insert(0, [occupied_time[1], removed[1]])
+            for i in range(len(timeslots)):
+                if timeslots[i][0] <= occupied_time[0] and timeslots[i][1] >= occupied_time[1]:
+                    removed = timeslots[i]
+                    timeslots.remove(timeslots[i])
+                    if removed[1] != occupied_time[1]:
+                        timeslots.insert(i, [occupied_time[1],removed[1]])
+                    if removed[0] != occupied_time[0]:
+                        timeslots.insert(i, [removed[0],occupied_time[0]])
+            if occupied_time[0] <= timeslots[-1][1] <= occupied_time[1]:
+                timeslots[-1][1] = occupied_time[0]
+            occupied_time[0] += frequency
+            occupied_time[1] += frequency
+    for timeslot1,timeslot2 in timeslots:
+        print(timeslot1)
+        print(timeslot2)
+        print('\n')
     return timeslots
