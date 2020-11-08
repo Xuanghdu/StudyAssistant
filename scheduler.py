@@ -60,13 +60,14 @@ def schedule(tasks, available_time):
                 duration = timeslot_duration
                 timeslot_duration = 0
                 todo.duration -= timeslot_duration
+                tasks.append(todo)
 
             time_span = schedule_dict.get(todo.UUID)
             if time_span is None:
                 time_span = []
-            time_span.append(start_time, start_time + duration)
+            time_span.append([start_time, start_time + duration])
             schedule_dict[todo.UUID] = time_span
-            
+
             '''
             if (todo.duration <= timeslot_duration):
                 schedule_dict[todo] = [start_time, start_time + todo.duration]
