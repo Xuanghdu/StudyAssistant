@@ -98,11 +98,11 @@ class MainWindow(QMainWindow):
                 hour = delta.days * 24 + delta.seconds // 3600
                 minute = delta.seconds // 60 % 60
             else:
-                hour = 0
-                minute = 0
+                hour = 99
+                minute = 99
         else:
-            hour = 0
-            minute = 0
+            hour = 99
+            minute = 99
 
         self.monthTab.taskViewer.displayCountDown(hour, minute)
         self.dayTab.taskViewer.displayCountDown(hour, minute)

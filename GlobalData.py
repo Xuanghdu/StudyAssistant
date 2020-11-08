@@ -83,12 +83,14 @@ def addFloatingTimeTask(task):
     floatingTimeTasks.append(task)
     availableTime = getAvailableTimeSlots()
 
-    newSchedule = schedule(floatingTimeTasks, availableTime)
+    newSchedule = schedule(floatingTimeTasks.copy(), availableTime)
     # TODO: pass the UUID/name of overlapping task into the exception
     if newSchedule is None:
         raise FloatingTimeOverlapException()
 
-    floatingSchedule = newSchedule
+    floatingSchedule.clear()
+    for key in newSchedule:
+        floatingSchedule[key] = newSchedule[key]
 
 
 def updateUpcomingTasks(now=None):
@@ -107,7 +109,7 @@ def updateUpcomingTasks(now=None):
             tupleList.append((startTime, name, endTime))
     tupleList.sort()
 
-    while len(tupleList) and tupleList[0][0] <= now:
+    while len(tupleList) and tupleList[0][2] <= now:
         del tupleList[0]
     if len(tupleList) > UPCOMING_COUNT_MAX:
         tupleList = tupleList[0:UPCOMING_COUNT_MAX]

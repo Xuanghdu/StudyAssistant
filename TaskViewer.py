@@ -22,7 +22,8 @@ class TaskViewer(QWidget):
         '''Display the hour and minute on the LCD displays. The hour and minute
         have two digits each. Extra digits are filled with zeros.'''
 
-        assert hour >= 0 and hour < 100 and minute >= 0 and minute < 100
+        hour = max(hour, 0)
+        minute = max(minute, 0)
         self.countDownHour.display('{:02d}'.format(hour))
         self.countDownMinute.display('{:02d}'.format(minute))
 
