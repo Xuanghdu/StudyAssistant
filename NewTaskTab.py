@@ -1,6 +1,6 @@
 from CustomControl import (
     DateTimeEdit, DoubleSpinBox, ImportantPushButton, Label, LineEdit,
-    NormalPushButton, SpinBox, TabWidget)
+    NormalPushButton, SpinBox, TabWidget, WarningBox)
 
 from PyQt5.QtCore import QDateTime
 
@@ -28,15 +28,67 @@ class NewTaskTab(TabWidget):
         self.durationInput.setRange(1, NewTaskTab.TASK_DURATION_MAX)
         layout.addWidget(self.durationInput, 1, 1, 1, 2)
 
-        layout.addWidget(self.createEditorTabs(), 2, 0, 1, 4)
+        self.editorTabs = self.createEditorTabs()
+        layout.addWidget(self.editorTabs, 2, 0, 1, 4)
 
         self.addButton = ImportantPushButton('Add')
+        self.addButton.clicked.connect(lambda: self.onAddClicked())
         layout.addWidget(self.addButton, 3, 2)
 
         self.cancelButton = NormalPushButton('Cancel')
+        self.cancelButton.clicked.connect(lambda: self.onCancelClicked())
         layout.addWidget(self.cancelButton, 3, 3)
 
         self.setLayout(layout)
+        self.resetInputs()
+
+    def resetInputs(self):
+        '''Reset the values of inputs and restore the tab status.'''
+
+        self.editorTabs.setCurrentIndex(0)
+        self.nameInput.setText('')
+        self.durationInput.setValue(1)
+        self.weightInput.setValue(0.5)
+        currentDateTime = QDateTime.currentDateTime()
+        self.deadlineInput.setDateTime(currentDateTime)
+        self.deadlineInput.setMinimumDateTime(currentDateTime)
+        self.startFromInput.setDateTime(currentDateTime)
+        self.startFromInput.setMinimumDateTime(currentDateTime)
+
+    def onAddClicked(self):
+        '''Action when the "Add" button is clicked.'''
+
+        taskName = self.nameInput.text().strip()
+        if len(taskName) == 0:
+            WarningBox('No Task Name', 'Task name cannot be empty!').exec()
+            return
+
+        currentIndex = self.editorTabs.currentIndex()
+        if currentIndex == 0:
+            self.onAddClickedScheduleForme()
+        elif currentIndex == 1:
+            self.onAddClickedLetMeDecide()
+        else:
+            WarningBox('Unknown error',
+                       'Cannot find the corresponding tab!').exec()
+            return
+
+        self.resetInputs()
+
+    def onAddClickedScheduleForme(self):
+        '''Action when the "Add" button is clicked and the "Schedule for Me" tab
+        is selected.'''
+
+        pass
+
+    def onAddClickedLetMeDecide(self):
+        '''Action when the "Add" button is clicked and the "Schedule for Me" tab
+        is selected.'''
+
+        pass
+
+    def onCancelClicked(self):
+        self.resetInputs()
 
     def createEditorTabs(self):
         '''Create and return a tab widget containing two types of task
@@ -59,7 +111,6 @@ class NewTaskTab(TabWidget):
         layout.addWidget(self.weightInput, 0, 1)
 
         self.deadlineInput = DateTimeEdit()
-        self.deadlineInput.setMinimumDateTime(QDateTime.currentDateTime())
         layout.addWidget(self.deadlineInput, 1, 1)
 
         widget = QWidget()
