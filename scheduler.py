@@ -30,7 +30,7 @@ def convert(ddl):
 def eval_priority(start_time, task):
     ddl_pressure = 1/((task.ddl - start_time - task.duration).total_seconds()/60)
     # negative???
-    return task.weight * ddl_pressure
+    return exp(task.weight) * ddl_pressure
 
 def schedule(tasks, available_time):
     """([Tasks], [[datetime,datetime]]) -> {Task:[[datetime,datetime]]}
@@ -80,7 +80,6 @@ def pretty_print(test_tasks, test_available_time):
         for start_end in schedules:
             print("start:", str(start_end[0])[0:16])
             print("end  :", str(start_end[1])[0:16])
-
 
 # TODO: add_occupied_time
 # TODO: convert_available_time: convert occupied time to available_time
