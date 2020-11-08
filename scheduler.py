@@ -65,7 +65,7 @@ def schedule(tasks, available_time):
         for task in tasks:
             if task.ddl <= ddl:
                 total_duration += task.duration
-                weighted_total_duration += task.weight * task.duration
+                weighted_total_duration += 1/(1+exp(-task.weight))* task.duration
         
         ddl_time_left = timedelta(minutes=0)
         for start,end in available_time:
@@ -75,16 +75,11 @@ def schedule(tasks, available_time):
                 ddl_time_left += ddl-start 
             else: break
 
-
-        print('lolololo')
-        print(ddl_time_left)
-        print(total_duration)
-        print(weighted_total_duration)
-
         if total_duration > ddl_time_left:
             for task in tasks:
                 if task.ddl <= ddl:
-                    task.duration *=  ddl_time_left/total_duration
+                    task.duration *= 0.9*1/(1+exp(-task.weight))* ddl_time_left/weighted_total_duration
+
     for task in tasks:
         print(task.duration)
 
