@@ -18,6 +18,10 @@ floatingSchedule = {}
 '''Dictionary from Task UUIDs to two dimensional arrays. Each row of the array
 represents an assigned time slot.'''
 
+upcomingTasks = {}
+'''2-dimensional array of upcoming tasks. In each row, there are task name,
+start time, and end time correspondingly.'''
+
 
 class FixedTimeOverlapException(Exception):
     '''Throwed only when `addFixedTimeTask` function encounters a
@@ -87,11 +91,8 @@ def addFloatingTimeTask(task):
     floatingSchedule = newSchedule
 
 
-def getUpcomingTasks(now=None):
-    '''Given the "now" time, return a 2-dimensional array of upcoming tasks.
-
-    In each row, there are task name, start time, and end time correspondingly.
-    Returned rows are in increasing order.'''
+def updateUpcomingTasks(now=None):
+    '''Given the "now" time, update `upcomingTasks`.'''
 
     if now is None:
         now = datetime.now()
@@ -112,7 +113,6 @@ def getUpcomingTasks(now=None):
         tupleList = tupleList[0:UPCOMING_COUNT_MAX]
     # TODO: Handle the case when multiple tasks have the same start time.
 
-    tasks = []
+    upcomingTasks = []
     for startTime, name, endTime in tupleList:
-        tasks.append([name, startTime, endTime])
-    return tasks
+        upcomingTasks.append([name, startTime, endTime])
