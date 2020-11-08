@@ -54,10 +54,12 @@ def schedule(tasks, available_time):
             
             if todo.duration <= timeslot.duration:
                 duration = todo.duration
+                timeslot_duration -= todo.duration
+                start_time += todo.duration
             else:
                 duration = timeslot_duration
+                timeslot_duration = 0
                 todo.duration -= timeslot_duration
-            timeslot_duration -= duration
 
             time_span = schedule_dict.get(todo.UUID)
             if time_span is None:
