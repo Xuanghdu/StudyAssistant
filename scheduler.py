@@ -37,6 +37,10 @@ def schedule(tasks, available_time):
     schedule_dict  : dict of task to two-dimensional array of [[begin,end]]
     """
     schedule_dict = {}
+    for task in tasks:
+        if task.ddl < datetime.now():
+            print("{} is overdue\n".format(task.name))
+            tasks.remove(task)
     for timeslot in available_time:
         priority = []
         start_time = timeslot[0]
@@ -60,7 +64,7 @@ def schedule(tasks, available_time):
 # TODO: add_occupied_time
 # TODO: convert_available_time: convert occupied time to available_time
 
-test_ddl = "2020, 11, 08, 10, 00"
+test_ddl = "2020, 11, 07, 10, 00"
 test_tasks = [Task("test1", convert(test_ddl), 0.5, 30)]
 current_time = datetime.now()
 test_available_time = [[current_time, convert(test_ddl)]]
