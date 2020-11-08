@@ -35,7 +35,7 @@ def eval_priority(start_time, task):
     # avoid exact 0
     # avoid negative (in the middle of calculation)
     if (task.ddl - start_time - task.duration).total_seconds() <= 0:
-        ddl_pressure = 2
+        ddl_pressure = 1
     else:
         ddl_pressure = 1 / \
             ((task.ddl - start_time - task.duration).total_seconds()/60)
