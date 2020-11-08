@@ -84,5 +84,11 @@ def pretty_print(test_tasks, test_available_time):
             print("start:", str(start_end[0])[0:16])
             print("end  :", str(start_end[1])[0:16])
 
-# TODO: add_occupied_time
-# TODO: convert_available_time: convert occupied time to available_time
+def last_ddl(test_tasks):
+    ddl = [test_task.ddl for test_task in test_tasks]
+    return max(ddl)
+
+def add_occupied_time(occupied_time, last, always=False):
+    current_time = datetime.now()
+    available_time = [[current_time, last]]
+    # TODO

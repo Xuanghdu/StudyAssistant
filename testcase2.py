@@ -19,6 +19,8 @@ tasks.append(Task("AER210_lec6", convert(ddl+"14, 00, 00"), 0.1, 30*1))
 tasks.append(Task("AER210_lec7", convert(ddl+"15, 00, 00"), 0.1, 30*1))
 
 current_time = datetime.now()
-test_available_time = [[current_time, convert(ddl+"15, 00, 00")]]
+test_available_time = [[current_time, last_ddl(tasks)]]
+
+print(last_ddl(tasks))
 
 pretty_print(tasks, test_available_time)
