@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QApplication, QGridLayout, QTableView, QWidget
 
 
 class TaskViewer(QWidget):
-    '''Widget which diplays a countdown to the next deadline and the following
+    '''Widget which diplays a countdown to the next deadline and the upcoming
     tasks.'''
 
     def __init__(self, parent=None):
@@ -14,7 +14,7 @@ class TaskViewer(QWidget):
 
         layout = QGridLayout()
         layout.addWidget(self.createCountDown(), 0, 0)
-        layout.addWidget(self.createFollowingTasks(), 1, 0)
+        layout.addWidget(self.createUpcomingTasks(), 1, 0)
 
         self.setLayout(layout)
 
@@ -45,12 +45,12 @@ class TaskViewer(QWidget):
         widget.setLayout(layout)
         return widget
 
-    def createFollowingTasks(self):
+    def createUpcomingTasks(self):
         '''Create and return a table countaining the basic information of the
-        following tasks.'''
+        upcoming tasks.'''
 
         layout = QGridLayout()
-        layout.addWidget(Label('Following tasks:'), 0, 0)
+        layout.addWidget(Label('Upcoming tasks:'), 0, 0)
 
         self.model = QStandardItemModel()
         self.model.setHorizontalHeaderLabels(

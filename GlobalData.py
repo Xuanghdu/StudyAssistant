@@ -4,6 +4,9 @@ from datetime import datetime
 
 DATETIME_MAX = datetime(2049, 12, 31, 23, 59)
 
+UPCOMING_COUNT_MAX = 20
+'''Maximum number of tasks shown in the "Upcoming tasks" list.'''
+
 fixedTimeTasks = []
 '''2-dimensional array of fixed time task. In each row, there are `taskName`,
 `startTime`, and `endTime` correspondingly.'''
@@ -82,3 +85,34 @@ def addFloatingTimeTask(task):
         raise FloatingTimeOverlapException()
 
     floatingSchedule = newSchedule
+
+
+def getUpcomingTasks(now=None):
+    '''Given the "now" time, return a 2-dimensional array of upcoming tasks.
+
+    In each row, there are task name, start time, and end time correspondingly.
+    Returned rows are in increasing order.'''
+
+    if now is None:
+        now = datetime.now()
+
+    tupleList = []
+    for task in fixedTimeTasks:
+        tupleList.append((task[1], task[0], task[2]))
+    for task in floatingTimeTasks:
+        name = task.name
+        timeSlots = floatingSchedule[task.UUID]
+        for startTime, endTime in timeSlots:
+            tupleList.append((startTime, name, endTime))
+    tupleList.sort()
+
+    while len(tupleList) and tupleList[0][0] <= now:
+        del tupleList[0]
+    if len(tupleList) > UPCOMING_COUNT_MAX:
+        tupleList = tupleList[0:UPCOMING_COUNT_MAX]
+    # TODO: Handle the case when multiple tasks have the same start time.
+
+    tasks = []
+    for startTime, name, endTime in tupleList:
+        tasks.append([name, startTime, endTime])
+    return tasks
